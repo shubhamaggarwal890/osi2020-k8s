@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: server-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      component: server
+  template: 
+    metadata:
+      labels:
+        component: server
+    spec:
+      containers:
+        - name: server
+          image: shubhamaggarwal890/osi2020-quoteserver
+          ports:
+            - containerPort: 8085
+          env:
+            - name: DATABASE_HOST
+              value: mysql-cluster-ip-service
+            - name: DATABASE_PORT
+              value: '3306'
+            - name: MYSQL_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: mysqldatabase
+                  key: MYSQLDATABASE
+            - name: MYSQL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: mysqluser
+                  key: MYSQLUSER
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysqlpass
+                  key: MYSQLPASS
